@@ -1,19 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FFXIVZoomHack", "FFXIVZoomHack\FFXIVZoomHack.csproj", "{A1EC889D-0BEB-4924-8D2F-DEF3B3EBA9CD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1EC889D-0BEB-4924-8D2F-DEF3B3EBA9CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EC889D-0BEB-4924-8D2F-DEF3B3EBA9CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1EC889D-0BEB-4924-8D2F-DEF3B3EBA9CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1EC889D-0BEB-4924-8D2F-DEF3B3EBA9CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {64073921-B7B8-4C0B-8FC0-ACA149D37FB0}
 	EndGlobalSection
 EndGlobal
