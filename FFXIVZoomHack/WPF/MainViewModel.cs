@@ -190,7 +190,8 @@ namespace FFXIVZoomHack.WPF
                     currentInstance.PID = currentInstance.PIDList.FirstOrDefault();
                 });
 
-                if (currentInstance.Config.AutoApply)
+                if (currentInstance.Config.AutoApply &&
+                    newPIDs.Any())
                 {
                     await currentInstance.ApplyChangesAsync(currentInstance.PIDList);
                 }
