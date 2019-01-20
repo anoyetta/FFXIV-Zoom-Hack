@@ -20,149 +20,152 @@ namespace FFXIVZoomHack.WPF
 
         #endregion Singleton
 
-        private Settings settings = Settings.Load();
+        public Settings InnerSettings => this.LazySettings.Value;
 
-        public void Save() => this.settings?.Save();
+        private readonly Lazy<Settings> LazySettings = new Lazy<Settings>(() => Settings.Load());
+
+        public void Save() => this.LazySettings.Value?.Save();
 
         public bool AutoApply
         {
-            get => this.settings.AutoApply;
+            get => this.LazySettings.Value.AutoApply;
             set => this.SetProperty(
-                x => this.settings.AutoApply = x,
-                this.settings.AutoApply,
+                x => this.LazySettings.Value.AutoApply = x,
+                this.LazySettings.Value.AutoApply,
                 value);
         }
 
         public float DesiredFov
         {
-            get => this.settings.DesiredFov;
+            get => this.LazySettings.Value.DesiredFov;
             set => this.SetProperty(
-                x => this.settings.DesiredFov = x,
-                this.settings.DesiredFov,
+                x => this.LazySettings.Value.DesiredFov = x,
+                this.LazySettings.Value.DesiredFov,
                 value);
         }
 
         public float DesiredZoom
         {
-            get => this.settings.DesiredZoom;
+            get => this.LazySettings.Value.DesiredZoom;
             set => this.SetProperty(
-                x => this.settings.DesiredZoom = x,
-                this.settings.DesiredZoom,
+                x => this.LazySettings.Value.DesiredZoom = x,
+                this.LazySettings.Value.DesiredZoom,
                 value);
         }
 
         public int[] DX9_StructureAddress
         {
-            get => this.settings.DX9_StructureAddress;
+            get => this.LazySettings.Value.DX9_StructureAddress;
             set => this.SetProperty(
-                x => this.settings.DX9_StructureAddress = x,
-                this.settings.DX9_StructureAddress,
+                x => this.LazySettings.Value.DX9_StructureAddress = x,
+                this.LazySettings.Value.DX9_StructureAddress,
                 value);
         }
 
         public int DX9_ZoomCurrent
         {
-            get => this.settings.DX9_ZoomCurrent;
+            get => this.LazySettings.Value.DX9_ZoomCurrent;
             set => this.SetProperty(
-                x => this.settings.DX9_ZoomCurrent = x,
-                this.settings.DX9_ZoomCurrent,
+                x => this.LazySettings.Value.DX9_ZoomCurrent = x,
+                this.LazySettings.Value.DX9_ZoomCurrent,
                 value);
         }
 
         public int DX9_ZoomMax
         {
-            get => this.settings.DX9_ZoomMax;
+            get => this.LazySettings.Value.DX9_ZoomMax;
             set => this.SetProperty(
-                x => this.settings.DX9_ZoomMax = x,
-                this.settings.DX9_ZoomMax,
+                x => this.LazySettings.Value.DX9_ZoomMax = x,
+                this.LazySettings.Value.DX9_ZoomMax,
                 value);
         }
 
         public int DX9_FovCurrent
         {
-            get => this.settings.DX9_FovCurrent;
+            get => this.LazySettings.Value.DX9_FovCurrent;
             set => this.SetProperty(
-                x => this.settings.DX9_FovCurrent = x,
-                this.settings.DX9_FovCurrent,
+                x => this.LazySettings.Value.DX9_FovCurrent = x,
+                this.LazySettings.Value.DX9_FovCurrent,
                 value);
         }
 
         public int DX9_FovMax
         {
-            get => this.settings.DX9_FovMax;
+            get => this.LazySettings.Value.DX9_FovMax;
             set => this.SetProperty(
-                x => this.settings.DX9_FovMax = x,
-                this.settings.DX9_FovMax,
+                x => this.LazySettings.Value.DX9_FovMax = x,
+                this.LazySettings.Value.DX9_FovMax,
                 value);
         }
 
         public int[] DX11_StructureAddress
         {
-            get => this.settings.DX11_StructureAddress;
+            get => this.LazySettings.Value.DX11_StructureAddress;
             set => this.SetProperty(
-                x => this.settings.DX11_StructureAddress = x,
-                this.settings.DX11_StructureAddress,
+                x => this.LazySettings.Value.DX11_StructureAddress = x,
+                this.LazySettings.Value.DX11_StructureAddress,
                 value);
         }
 
         public int DX11_ZoomCurrent
         {
-            get => this.settings.DX11_ZoomCurrent;
+            get => this.LazySettings.Value.DX11_ZoomCurrent;
             set => this.SetProperty(
-                x => this.settings.DX11_ZoomCurrent = x,
-                this.settings.DX11_ZoomCurrent,
+                x => this.LazySettings.Value.DX11_ZoomCurrent = x,
+                this.LazySettings.Value.DX11_ZoomCurrent,
                 value);
         }
 
         public int DX11_ZoomMax
         {
-            get => this.settings.DX11_ZoomMax;
+            get => this.LazySettings.Value.DX11_ZoomMax;
             set => this.SetProperty(
-                x => this.settings.DX11_ZoomMax = x,
-                this.settings.DX11_ZoomMax,
+                x => this.LazySettings.Value.DX11_ZoomMax = x,
+                this.LazySettings.Value.DX11_ZoomMax,
                 value);
         }
 
         public int DX11_FovCurrent
         {
-            get => this.settings.DX11_FovCurrent;
+            get => this.LazySettings.Value.DX11_FovCurrent;
             set => this.SetProperty(
-                x => this.settings.DX11_FovCurrent = x,
-                this.settings.DX11_FovCurrent,
+                x => this.LazySettings.Value.DX11_FovCurrent = x,
+                this.LazySettings.Value.DX11_FovCurrent,
                 value);
         }
 
         public int DX11_FovMax
         {
-            get => this.settings.DX11_FovMax;
+            get => this.LazySettings.Value.DX11_FovMax;
             set => this.SetProperty(
-                x => this.settings.DX11_FovMax = x,
-                this.settings.DX11_FovMax,
+                x => this.LazySettings.Value.DX11_FovMax = x,
+                this.LazySettings.Value.DX11_FovMax,
                 value);
         }
 
         public string OffsetUpdateLocation
         {
-            get => this.settings.OffsetUpdateLocation;
+            get => this.LazySettings.Value.OffsetUpdateLocation;
             set => this.SetProperty(
-                x => this.settings.OffsetUpdateLocation = x,
-                this.settings.OffsetUpdateLocation,
+                x => this.LazySettings.Value.OffsetUpdateLocation = x,
+                this.LazySettings.Value.OffsetUpdateLocation,
                 value);
         }
 
         public string LastUpdate
         {
-            get => this.settings.LastUpdate;
+            get => this.LazySettings.Value.LastUpdate;
             set => this.SetProperty(
-                x => this.settings.LastUpdate = x,
-                this.settings.LastUpdate,
+                x => this.LazySettings.Value.LastUpdate = x,
+                this.LazySettings.Value.LastUpdate,
                 value);
         }
 
         private bool SetProperty<T>(
             Action<T> set,
             T oldValue,
-            T newValue)
+            T newValue,
+            [CallerMemberName]string propertyName = null)
         {
             if (object.Equals(oldValue, newValue))
             {
@@ -170,6 +173,10 @@ namespace FFXIVZoomHack.WPF
             }
 
             set(newValue);
+
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(propertyName));
 
             return true;
         }

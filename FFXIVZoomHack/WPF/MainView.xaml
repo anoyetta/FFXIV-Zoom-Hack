@@ -5,6 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:local="clr-namespace:FFXIVZoomHack.WPF"
+  xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   mc:Ignorable="d"
   Title="FFXIVZoomHack" Height="330" Width="800"
   ResizeMode="NoResize"
@@ -33,6 +34,12 @@
     <Style TargetType="CheckBox">
       <Setter Property="VerticalContentAlignment" Value="Center" />
     </Style>
+
+    <Style TargetType="{x:Type xctk:DoubleUpDown}">
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
   </Window.Resources>
 
   <Grid
@@ -48,40 +55,40 @@
       <TextBox Text="{Binding Config.OffsetUpdateLocation, Mode=TwoWay}" />
       <StackPanel Orientation="Horizontal">
         <TextBlock>
-          <Hyperlink>Default</Hyperlink>
+          <Hyperlink Command="{Binding SetDefaultUpdateLocationCommand, Mode=OneWay}">Default</Hyperlink>
         </TextBlock>
 
         <TextBlock Margin="20 0 0 0">
-          <Hyperlink>Update Offset</Hyperlink>
+          <Hyperlink Command="{Binding UpdateOffsetCommand, Mode=OneWay}">Update Offset</Hyperlink>
         </TextBlock>
       </StackPanel>
 
       <StackPanel Orientation="Horizontal" Margin="{StaticResource LabelMargin}">
         <StackPanel>
           <Label Content="FFXIV Process" />
-          <ComboBox Width="245" HorizontalAlignment="Left" />
-          <CheckBox Margin="0 5 0 0" Content="Automatically apply on load" />
+          <ComboBox Width="245" HorizontalAlignment="Left" Height="34" ItemsSource="{Binding PIDList, Mode=OneWay}" SelectedItem="{Binding PID, Mode=TwoWay}" />
+          <CheckBox Margin="0 5 0 0" Content="Automatically apply on load" IsChecked="{Binding Config.AutoApply, Mode=TwoWay}" Command="{Binding CheckAutoApplyCommand, Mode=OneWay}" />
         </StackPanel>
 
         <StackPanel Margin="60 0 0 0">
           <Label Content="Zoom Max" />
-          <TextBox Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Right" />
+          <xctk:SingleUpDown HorizontalAlignment="Left" Width="95" Increment="0.01" Minimum="0" Maximum="99" Value="{Binding Config.DesiredZoom, Mode=TwoWay}" FormatString="N2" />
         </StackPanel>
 
         <StackPanel Margin="40 0 0 0">
           <Label Content="FOV Max" />
-          <TextBox Width="120" HorizontalAlignment="Left" HorizontalContentAlignment="Right" />
+          <xctk:SingleUpDown HorizontalAlignment="Left" Width="95" Increment="0.01" Minimum="0" Maximum="99" Value="{Binding Config.DesiredFov, Mode=TwoWay}" FormatString="N2" />
         </StackPanel>
       </StackPanel>
     </StackPanel>
 
     <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
       <TextBlock>
-        <Hyperlink>Default</Hyperlink>
+        <Hyperlink Command="{Binding SetDefaultCommand, Mode=OneWay}">Default</Hyperlink>
       </TextBlock>
 
       <TextBlock Margin="20 0 0 0">
-        <Hyperlink>Apply</Hyperlink>
+        <Hyperlink Command="{Binding ApplyCommand, Mode=OneWay}">Apply</Hyperlink>
       </TextBlock>
     </StackPanel>
   </Grid>
