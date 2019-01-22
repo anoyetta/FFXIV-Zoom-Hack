@@ -13,14 +13,11 @@ using Prism.Commands;
 namespace FFXIVZoomHack.WPF
 {
     public class MainViewModel :
-        INotifyPropertyChanged
+        INotifyPropertyChanged,
+        IDisposable
     {
-        private static MainViewModel currentInstance;
-
         public MainViewModel()
         {
-            currentInstance = this;
-
             this.Config.PropertyChanged += async (_, e) =>
             {
                 switch (e.PropertyName)
@@ -36,6 +33,23 @@ namespace FFXIVZoomHack.WPF
                         break;
                 }
             };
+
+            this.thread = new Thread(new ThreadStart(this.DoWork))
+            {
+                IsBackground = true,
+                Priority = ThreadPriority.Lowest,
+            };
+
+            this.thread.Start();
+        }
+
+        public void Dispose()
+        {
+            if (this.thread != null)
+            {
+                this.thread.Abort();
+                this.thread = null;
+            }
         }
 
         public SettingsHelper Config => SettingsHelper.Instance;
@@ -156,53 +170,54 @@ namespace FFXIVZoomHack.WPF
             }
         }
 
-        private static readonly System.Threading.Timer Timer = new System.Threading.Timer(
-            TimerCallback,
-            null,
-            TimeSpan.FromMilliseconds(100),
-            Timeout.InfiniteTimeSpan);
+        private Thread thread;
 
-        private static async void TimerCallback(object state)
+        private async void DoWork()
         {
-            try
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+
+            while (true)
             {
-                var activePIDs = Memory.GetPids().ToArray();
-                var currentPIDs = currentInstance.PIDList.ToArray();
-
-                var newPIDs = activePIDs.Except(currentPIDs).ToArray();
-
-                await Application.Current.Dispatcher.InvokeAsync(() =>
+                try
                 {
-                    foreach (var id in newPIDs)
+                    var activePIDs = Memory.GetPids().ToArray();
+                    var currentPIDs = this.PIDList.ToArray();
+
+                    var newPIDs = activePIDs.Except(currentPIDs).ToArray();
+
+                    await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
-                        currentInstance.PIDList.Add(id);
-                    }
+                        foreach (var id in newPIDs)
+                        {
+                            this.PIDList.Add(id);
+                        }
 
-                    var toRemove = currentInstance.PIDList
-                        .Where(x => !activePIDs.Contains(x))
-                        .ToArray();
+                        var toRemove = this.PIDList
+                            .Where(x => !activePIDs.Contains(x))
+                            .ToArray();
 
-                    foreach (var id in toRemove)
+                        foreach (var id in toRemove)
+                        {
+                            this.PIDList.Remove(id);
+                        }
+
+                        this.PID = this.PIDList.FirstOrDefault();
+                    });
+
+                    if (this.Config.AutoApply &&
+                        newPIDs.Any())
                     {
-                        currentInstance.PIDList.Remove(id);
+                        await this.ApplyChangesAsync(this.PIDList);
                     }
-
-                    currentInstance.PID = currentInstance.PIDList.FirstOrDefault();
-                });
-
-                if (currentInstance.Config.AutoApply &&
-                    newPIDs.Any())
-                {
-                    await currentInstance.ApplyChangesAsync(currentInstance.PIDList);
                 }
-            }
-            catch
-            {
-                /* something went wrong on the background thread, should find a way to log this..*/
-            }
-            finally
-            {
-                Timer.Change(TimeSpan.FromSeconds(10), Timeout.InfiniteTimeSpan);
+                catch (ThreadAbortException)
+                {
+                    return;
+                }
+                finally
+                {
+                    Thread.Sleep(TimeSpan.FromSeconds(8));
+                }
             }
         }
 

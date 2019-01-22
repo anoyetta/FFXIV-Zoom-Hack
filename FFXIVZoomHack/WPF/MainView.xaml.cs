@@ -10,6 +10,13 @@ namespace FFXIVZoomHack.WPF
         public MainView()
         {
             this.InitializeComponent();
+
+            this.Closing += (_, __) =>
+            {
+                this.ViewModel?.Dispose();
+            };
         }
+
+        public MainViewModel ViewModel => this.DataContext as MainViewModel;
     }
 }
