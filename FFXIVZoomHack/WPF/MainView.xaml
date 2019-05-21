@@ -6,6 +6,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:local="clr-namespace:FFXIVZoomHack.WPF"
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+  xmlns:tb="http://www.hardcodet.net/taskbar"
   mc:Ignorable="d"
   Title="FFXIVZoomHack" Height="330" Width="800"
   FontSize="18"
@@ -18,77 +19,92 @@
   Icon="/FFXIVZoomHack;component/Loupe.ico"
   d:DataContext="{d:DesignInstance Type=local:MainViewModel, IsDesignTimeCreatable=True}">
 
-    <Window.DataContext>
-        <local:MainViewModel />
-    </Window.DataContext>
+  <Window.DataContext>
+    <local:MainViewModel />
+  </Window.DataContext>
 
-    <Window.Resources>
-        <Thickness x:Key="LabelMargin">0 30 0 0</Thickness>
+  <Window.Resources>
+    <Thickness x:Key="LabelMargin">0 30 0 0</Thickness>
 
-        <Style TargetType="TextBox">
-            <Setter Property="Height" Value="34" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-        </Style>
+    <Style TargetType="TextBox">
+      <Setter Property="Height" Value="34" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
 
-        <Style TargetType="CheckBox">
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-        </Style>
+    <Style TargetType="CheckBox">
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
 
-        <Style TargetType="{x:Type xctk:DoubleUpDown}">
-            <Setter Property="HorizontalAlignment" Value="Left" />
-            <Setter Property="Height" Value="34" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-        </Style>
-    </Window.Resources>
+    <Style TargetType="{x:Type xctk:DoubleUpDown}">
+      <Setter Property="HorizontalAlignment" Value="Left" />
+      <Setter Property="Height" Value="34" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
 
-    <Grid
-    Margin="20">
+    <ContextMenu x:Key="NotifyIconMenu" MinWidth="200">
+      <MenuItem Header="Show" Command="{Binding ShowCommand, Mode=OneWay}" />
+      <MenuItem Header="Apply" Command="{Binding ApplyCommand, Mode=OneWay}" />
+      <Separator />
+      <MenuItem Header="Exit" Command="{Binding ExitCommand, Mode=OneWay}" />
+    </ContextMenu>
+  </Window.Resources>
 
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+  <Grid>
+    <tb:TaskbarIcon
+      x:Name="NotifyIcon"
+      IconSource="/Loupe.ico"
+      Visibility="Collapsed"
+      LeftClickCommand="{Binding ShowCommand, Mode=OneWay}"
+      ContextMenu="{DynamicResource NotifyIconMenu}"
+      ToolTipText="FFXIVZoomHack" />
 
-        <StackPanel Grid.Row="0">
-            <Label Content="Offset" />
-            <TextBox Text="{Binding Config.OffsetUpdateLocation, Mode=TwoWay}" />
-            <StackPanel Orientation="Horizontal">
-                <TextBlock>
+    <Grid Margin="20">
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <StackPanel Grid.Row="0">
+        <Label Content="Offset" />
+        <TextBox Text="{Binding Config.OffsetUpdateLocation, Mode=TwoWay}" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock>
           <Hyperlink Command="{Binding SetDefaultUpdateLocationCommand, Mode=OneWay}">Default</Hyperlink>
-                </TextBlock>
+          </TextBlock>
 
-                <TextBlock Margin="20 0 0 0">
+          <TextBlock Margin="20 0 0 0">
           <Hyperlink Command="{Binding UpdateOffsetCommand, Mode=OneWay}">Update Offset</Hyperlink>
-                </TextBlock>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="{StaticResource LabelMargin}">
-                <StackPanel>
-                    <Label Content="FFXIV Process" />
-                    <ComboBox Width="245" HorizontalAlignment="Left" Height="34" ItemsSource="{Binding PIDList, Mode=OneWay}" SelectedItem="{Binding PID, Mode=TwoWay}" />
-                    <CheckBox Margin="0 5 0 0" Content="Automatically apply on load" IsChecked="{Binding Config.AutoApply, Mode=TwoWay}" Command="{Binding CheckAutoApplyCommand, Mode=OneWay}" />
-                </StackPanel>
-
-                <StackPanel Margin="60 0 0 0">
-                    <Label Content="Zoom Max" />
-                    <xctk:SingleUpDown HorizontalAlignment="Left" Width="95" Increment="0.01" Minimum="0" Maximum="99" Value="{Binding Config.DesiredZoom, Mode=TwoWay}" FormatString="N2" />
-                </StackPanel>
-
-                <StackPanel Margin="40 0 0 0">
-                    <Label Content="FOV Max" />
-                    <xctk:SingleUpDown HorizontalAlignment="Left" Width="95" Increment="0.01" Minimum="0" Maximum="99" Value="{Binding Config.DesiredFov, Mode=TwoWay}" FormatString="N2" />
-                </StackPanel>
-            </StackPanel>
+          </TextBlock>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
-            <TextBlock>
+        <StackPanel Orientation="Horizontal" Margin="{StaticResource LabelMargin}">
+          <StackPanel>
+            <Label Content="FFXIV Process" />
+            <ComboBox Width="245" HorizontalAlignment="Left" Height="34" ItemsSource="{Binding PIDList, Mode=OneWay}" SelectedItem="{Binding PID, Mode=TwoWay}" />
+            <CheckBox Margin="0 5 0 0" Content="Automatically apply on load" IsChecked="{Binding Config.AutoApply, Mode=TwoWay}" Command="{Binding CheckAutoApplyCommand, Mode=OneWay}" />
+          </StackPanel>
+
+          <StackPanel Margin="60 0 0 0">
+            <Label Content="Zoom Max" />
+            <xctk:SingleUpDown HorizontalAlignment="Left" Width="95" Increment="0.01" Minimum="0" Maximum="99" Value="{Binding Config.DesiredZoom, Mode=TwoWay}" FormatString="N2" />
+          </StackPanel>
+
+          <StackPanel Margin="40 0 0 0">
+            <Label Content="FOV Max" />
+            <xctk:SingleUpDown HorizontalAlignment="Left" Width="95" Increment="0.01" Minimum="0" Maximum="99" Value="{Binding Config.DesiredFov, Mode=TwoWay}" FormatString="N2" />
+          </StackPanel>
+        </StackPanel>
+      </StackPanel>
+
+      <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
+        <TextBlock>
         <Hyperlink Command="{Binding SetDefaultCommand, Mode=OneWay}">Default</Hyperlink>
-            </TextBlock>
+        </TextBlock>
 
-            <TextBlock Margin="20 0 0 0">
+        <TextBlock Margin="20 0 0 0">
         <Hyperlink Command="{Binding ApplyCommand, Mode=OneWay}">Apply</Hyperlink>
-            </TextBlock>
-        </StackPanel>
+        </TextBlock>
+      </StackPanel>
     </Grid>
+  </Grid>
 </Window>

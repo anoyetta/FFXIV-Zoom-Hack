@@ -1,5 +1,7 @@
 using System;
 using System.Net;
+using System.Windows.Interop;
+using System.Windows.Media;
 using FFXIVZoomHack.WPF;
 
 namespace FFXIVZoomHack
@@ -17,6 +19,8 @@ namespace FFXIVZoomHack
             {
                 ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose
             };
+
+            RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
 
             app.Run(new MainView());
 

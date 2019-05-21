@@ -28,7 +28,7 @@ namespace FFXIVZoomHack
             }
         }
 
-        public static void Apply(Settings settings, int pid)
+        public static void Apply(Settings settings, int pid, bool isOnlyMax = false)
         {
             if (string.Equals(settings.LastUpdate, "unupdated", StringComparison.Ordinal))
             {
@@ -53,11 +53,11 @@ namespace FFXIVZoomHack
                     hProcess = OpenProcess(ProcessFlags, false, pid);
                     if (string.Equals(p.ProcessName, "ffxiv", StringComparison.Ordinal))
                     {
-                        ApplyX86(settings, hProcess);
+                        ApplyX86(settings, hProcess, isOnlyMax);
                     }
                     else if (string.Equals(p.ProcessName, "ffxiv_dx11", StringComparison.Ordinal))
                     {
-                        ApplyX64(settings, hProcess);
+                        ApplyX64(settings, hProcess, isOnlyMax);
                     }
                 }
                 finally
@@ -70,29 +70,37 @@ namespace FFXIVZoomHack
             }
         }
 
-        private static void ApplyX86(Settings settings, IntPtr hProcess)
+        private static void ApplyX86(Settings settings, IntPtr hProcess, bool isOnlyMax = false)
         {
             var addr = GetAddress(4, hProcess, settings.DX9_StructureAddress, settings.DX9_ZoomMax);
             Write(settings.DesiredZoom, hProcess, addr);
-            addr = GetAddress(4, hProcess, settings.DX9_StructureAddress, settings.DX9_ZoomCurrent);
-            Write(settings.DesiredZoom, hProcess, addr);
 
-            addr = GetAddress(4, hProcess, settings.DX9_StructureAddress, settings.DX9_FovCurrent);
-            Write(settings.DesiredFov, hProcess, addr);
+            if (!isOnlyMax)
+            {
+                addr = GetAddress(4, hProcess, settings.DX9_StructureAddress, settings.DX9_ZoomCurrent);
+                Write(settings.DesiredZoom, hProcess, addr);
+            }
+
             addr = GetAddress(4, hProcess, settings.DX9_StructureAddress, settings.DX9_FovMax);
+            Write(settings.DesiredFov, hProcess, addr);
+            addr = GetAddress(4, hProcess, settings.DX9_StructureAddress, settings.DX9_FovCurrent);
             Write(settings.DesiredFov, hProcess, addr);
         }
 
-        private static void ApplyX64(Settings settings, IntPtr hProcess)
+        private static void ApplyX64(Settings settings, IntPtr hProcess, bool isOnlyMax = false)
         {
             var addr = GetAddress(8, hProcess, settings.DX11_StructureAddress, settings.DX11_ZoomMax);
             Write(settings.DesiredZoom, hProcess, addr);
-            addr = GetAddress(8, hProcess, settings.DX11_StructureAddress, settings.DX11_ZoomCurrent);
-            Write(settings.DesiredZoom, hProcess, addr);
 
-            addr = GetAddress(8, hProcess, settings.DX11_StructureAddress, settings.DX11_FovCurrent);
-            Write(settings.DesiredFov, hProcess, addr);
+            if (!isOnlyMax)
+            {
+                addr = GetAddress(8, hProcess, settings.DX11_StructureAddress, settings.DX11_ZoomCurrent);
+                Write(settings.DesiredZoom, hProcess, addr);
+            }
+
             addr = GetAddress(8, hProcess, settings.DX11_StructureAddress, settings.DX11_FovMax);
+            Write(settings.DesiredFov, hProcess, addr);
+            addr = GetAddress(8, hProcess, settings.DX11_StructureAddress, settings.DX11_FovCurrent);
             Write(settings.DesiredFov, hProcess, addr);
         }
 
@@ -125,7 +133,7 @@ namespace FFXIVZoomHack
         private static IntPtr GetBaseAddress(IntPtr hProcess)
         {
             var hModules = new IntPtr[1024];
-            var uiSize = (uint) (Marshal.SizeOf(typeof(IntPtr)) * hModules.Length);
+            var uiSize = (uint)(Marshal.SizeOf(typeof(IntPtr)) * hModules.Length);
             var gch = GCHandle.Alloc(hModules, GCHandleType.Pinned);
             try
             {
@@ -136,7 +144,7 @@ namespace FFXIVZoomHack
                 }
 
                 var mainModule = IntPtr.Zero;
-                var modulesLoaded = (int) (cbNeeded / Marshal.SizeOf(typeof(IntPtr)));
+                var modulesLoaded = (int)(cbNeeded / Marshal.SizeOf(typeof(IntPtr)));
                 for (var i = 0; i < modulesLoaded; i++)
                 {
                     var moduleFilenameBuilder = new StringBuilder(1024);
@@ -158,7 +166,7 @@ namespace FFXIVZoomHack
                     throw new Exception("Could not find module for executable");
                 }
 
-                if (!GetModuleInformation(hProcess, mainModule, out var moduleInfo, (uint) Marshal.SizeOf<ModuleInfo>()))
+                if (!GetModuleInformation(hProcess, mainModule, out var moduleInfo, (uint)Marshal.SizeOf<ModuleInfo>()))
                 {
                     throw new Exception("Could not get module information from process" + Marshal.GetLastWin32Error());
                 }
@@ -196,9 +204,9 @@ namespace FFXIVZoomHack
         [StructLayout(LayoutKind.Sequential)]
         private struct ModuleInfo
         {
-             public IntPtr lpBaseOfDll;
-             public uint SizeOfImage;
-             public IntPtr EntryPoint;
+            public IntPtr lpBaseOfDll;
+            public uint SizeOfImage;
+            public IntPtr EntryPoint;
         }
 
         [Flags]

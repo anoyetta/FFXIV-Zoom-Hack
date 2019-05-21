@@ -52,6 +52,8 @@ namespace FFXIVZoomHack.WPF
             }
         }
 
+        public MainView MainView { get; set; }
+
         public SettingsHelper Config => SettingsHelper.Instance;
 
         public ObservableCollection<int> PIDList { get; } = new ObservableCollection<int>();
@@ -114,11 +116,44 @@ namespace FFXIVZoomHack.WPF
                     MessageBoxImage.Information);
             }));
 
+        private DelegateCommand showCommand;
+
+        public DelegateCommand ShowCommand =>
+            this.showCommand ?? (this.showCommand = new DelegateCommand(this.ExecuteShowCommand));
+
+        private void ExecuteShowCommand()
+        {
+            this.MainView.Show();
+            this.MainView.WindowState = WindowState.Normal;
+            this.MainView.NotifyIcon.Visibility = Visibility.Collapsed;
+
+            this.MainView.Activate();
+        }
+
+        private DelegateCommand hideCommand;
+
+        public DelegateCommand HideCommand =>
+            this.hideCommand ?? (this.hideCommand = new DelegateCommand(this.ExecuteHideCommand));
+
+        private void ExecuteHideCommand()
+        {
+            this.MainView.NotifyIcon.Visibility = Visibility.Visible;
+            this.MainView.Hide();
+        }
+
+        private DelegateCommand exitCommand;
+
+        public DelegateCommand ExitCommand =>
+            this.exitCommand ?? (this.exitCommand = new DelegateCommand(() => this.MainView?.Close()));
+
         private async Task ApplyChangesAsync(IEnumerable<int> pids = null) => await Task.Run(() =>
         {
+            const bool isOnlyMax = true;
+
             foreach (var pid in (pids ?? this.PIDList))
             {
-                Memory.Apply(this.Config.InnerSettings, pid);
+                Memory.Apply(this.Config.InnerSettings, pid, isOnlyMax);
+                Thread.Sleep(1);
             }
         });
 
@@ -204,8 +239,7 @@ namespace FFXIVZoomHack.WPF
                         this.PID = this.PIDList.FirstOrDefault();
                     });
 
-                    if (this.Config.AutoApply &&
-                        newPIDs.Any())
+                    if (this.Config.AutoApply && this.PIDList.Any())
                     {
                         await this.ApplyChangesAsync(this.PIDList);
                     }
