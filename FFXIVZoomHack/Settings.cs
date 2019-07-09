@@ -69,6 +69,7 @@ namespace FFXIVZoomHack
                         case "AutoApply":
                             settings.AutoApply = bool.Parse(element.Value);
                             break;
+
                         case "DX9":
                             settings.DX9_StructureAddress = element.Element("StructureAddress")
                                 .Value
@@ -81,6 +82,7 @@ namespace FFXIVZoomHack
                             settings.DX9_FovCurrent = int.Parse(element.Element("FovCurrent").Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                             settings.DX9_FovMax = int.Parse(element.Element("FovMax").Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                             break;
+
                         case "DX11":
                             settings.DX11_StructureAddress = element.Element("StructureAddress")
                                 .Value
@@ -93,6 +95,7 @@ namespace FFXIVZoomHack
                             settings.DX11_FovCurrent = int.Parse(element.Element("FovCurrent").Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                             settings.DX11_FovMax = int.Parse(element.Element("FovMax").Value, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
                             break;
+
                         case "DesiredZoom":
                             settings.DesiredZoom = float.Parse(element.Value, CultureInfo.InvariantCulture);
                             if (settings.DesiredZoom < 1f || settings.DesiredZoom > 1000f)
@@ -100,6 +103,7 @@ namespace FFXIVZoomHack
                                 settings.DesiredZoom = 20f;
                             }
                             break;
+
                         case "DesiredFov":
                             settings.DesiredFov = float.Parse(element.Value, CultureInfo.InvariantCulture);
                             if (settings.DesiredFov < 0.01f || settings.DesiredFov > 3f)
@@ -107,6 +111,7 @@ namespace FFXIVZoomHack
                                 settings.DesiredFov = 0.78f;
                             }
                             break;
+
                         case "LastUpdate":
                             settings.LastUpdate = element.Value;
                             break;

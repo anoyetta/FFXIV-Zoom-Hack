@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -161,13 +163,15 @@ namespace FFXIVZoomHack.WPF
         {
             try
             {
-                var offsets = Settings.Load(this.Config.OffsetUpdateLocation);
+                var temp = Path.GetTempFileName();
+                File.Delete(temp);
 
-                if (string.Equals(this.Config.LastUpdate, offsets.LastUpdate))
+                using (var web = new WebClient())
                 {
-                    MessageBox.Show("No new update found");
-                    return;
+                    await web.DownloadFileTaskAsync(this.Config.OffsetUpdateLocation, temp);
                 }
+
+                var offsets = Settings.Load(temp);
 
                 this.Config.DX11_StructureAddress = offsets.DX11_StructureAddress;
                 this.Config.DX11_ZoomCurrent = offsets.DX11_ZoomCurrent;
