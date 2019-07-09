@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
 using FFXIVZoomHack.WPF;
@@ -18,6 +19,14 @@ namespace FFXIVZoomHack
             var app = new System.Windows.Application()
             {
                 ShutdownMode = System.Windows.ShutdownMode.OnMainWindowClose
+            };
+
+            app.DispatcherUnhandledException += (_, e) =>
+            {
+                MessageBox.Show(
+                    "ó\ä˙ÇµÇ»Ç¢ó·äOÇ™î≠ê∂ÇµÇ‹ÇµÇΩÅB\n" + e.Exception.ToString());
+
+                app.Shutdown();
             };
 
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
