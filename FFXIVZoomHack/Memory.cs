@@ -28,11 +28,18 @@ namespace FFXIVZoomHack
             }
         }
 
+        private static bool isUpdateNotified = false;
+
         public static void Apply(Settings settings, int pid, bool isOnlyMax = false)
         {
             if (string.Equals(settings.LastUpdate, "unupdated", StringComparison.Ordinal))
             {
-                MessageBox.Show("Memory offsets need updating, click the update offsets button.");
+                if (!isUpdateNotified)
+                {
+                    isUpdateNotified = true;
+                    MessageBox.Show("Memory offsets need updating, click the update offsets button.");
+                }
+
                 return;
             }
 
