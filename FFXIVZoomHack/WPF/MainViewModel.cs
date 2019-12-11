@@ -159,19 +159,26 @@ namespace FFXIVZoomHack.WPF
             }
         });
 
+        private async Task<Settings> GetOffsetsAsync()
+        {
+            var temp = Path.GetTempFileName();
+            File.Delete(temp);
+
+            using (var web = new WebClient())
+            {
+                await web.DownloadFileTaskAsync(this.Config.OffsetUpdateLocation, temp);
+            }
+
+            var offsets = Settings.Load(temp);
+
+            return offsets;
+        }
+
         private async Task UpdateOffsetAsync()
         {
             try
             {
-                var temp = Path.GetTempFileName();
-                File.Delete(temp);
-
-                using (var web = new WebClient())
-                {
-                    await web.DownloadFileTaskAsync(this.Config.OffsetUpdateLocation, temp);
-                }
-
-                var offsets = Settings.Load(temp);
+                var offsets = await this.GetOffsetsAsync();
 
                 this.Config.DX11_StructureAddress = offsets.DX11_StructureAddress;
                 this.Config.DX11_ZoomCurrent = offsets.DX11_ZoomCurrent;
@@ -209,11 +216,57 @@ namespace FFXIVZoomHack.WPF
             }
         }
 
+        private async Task<bool> TryUpdateOffsetAsync()
+        {
+            var offsets = await this.GetOffsetsAsync();
+
+            var t1 = DateTime.MinValue.ToString("yyyy-MM-dd");
+            if (!string.IsNullOrEmpty(this.Config.LastUpdate) &&
+                this.Config.LastUpdate.Length >= 10)
+            {
+                t1 = this.Config.LastUpdate.Substring(0, 10);
+            }
+
+            if (string.IsNullOrEmpty(offsets.LastUpdate) ||
+                this.Config.LastUpdate.Length < 10)
+            {
+                return false;
+            }
+
+            var t2 = offsets.LastUpdate.Substring(0, 10);
+
+            if (DateTime.TryParse(t1, out DateTime current) &&
+                DateTime.TryParse(t2, out DateTime remote))
+            {
+                if (remote > current)
+                {
+                    this.Config.DX11_StructureAddress = offsets.DX11_StructureAddress;
+                    this.Config.DX11_ZoomCurrent = offsets.DX11_ZoomCurrent;
+                    this.Config.DX11_ZoomMax = offsets.DX11_ZoomMax;
+                    this.Config.DX11_FovCurrent = offsets.DX11_FovCurrent;
+                    this.Config.DX11_FovMax = offsets.DX11_FovMax;
+                    this.Config.DX9_StructureAddress = offsets.DX9_StructureAddress;
+                    this.Config.DX9_ZoomCurrent = offsets.DX9_ZoomCurrent;
+                    this.Config.DX9_ZoomMax = offsets.DX9_ZoomMax;
+                    this.Config.DX9_FovCurrent = offsets.DX9_FovCurrent;
+                    this.Config.DX9_FovMax = offsets.DX9_FovMax;
+                    this.Config.LastUpdate = offsets.LastUpdate;
+                    this.Config.Save();
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private Thread thread;
 
         private async void DoWork()
         {
             Thread.Sleep(TimeSpan.FromSeconds(5));
+
+            await this.TryUpdateOffsetAsync();
 
             while (true)
             {
