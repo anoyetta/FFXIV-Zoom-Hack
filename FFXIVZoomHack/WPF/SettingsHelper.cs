@@ -35,6 +35,15 @@ namespace FFXIVZoomHack.WPF
                 value);
         }
 
+        public bool AutoQuit
+        {
+            get => this.LazySettings.Value.AutoQuit;
+            set => this.SetProperty(
+                x => this.LazySettings.Value.AutoQuit = x,
+                this.LazySettings.Value.AutoQuit,
+                value);
+        }
+
         public float DesiredFov
         {
             get => this.LazySettings.Value.DesiredFov;
@@ -165,7 +174,7 @@ namespace FFXIVZoomHack.WPF
             Action<T> set,
             T oldValue,
             T newValue,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (object.Equals(oldValue, newValue))
             {
@@ -187,7 +196,7 @@ namespace FFXIVZoomHack.WPF
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(
                 this,
@@ -197,7 +206,7 @@ namespace FFXIVZoomHack.WPF
         protected virtual bool SetProperty<T>(
             ref T field,
             T value,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (Equals(field, value))
             {

@@ -296,9 +296,16 @@ namespace FFXIVZoomHack.WPF
                         this.PID = this.PIDList.FirstOrDefault();
                     });
 
-                    if (this.Config.AutoApply && this.PIDList.Any())
+                    if (this.Config.AutoApply && newPIDs.Any())
                     {
-                        await this.ApplyChangesAsync(this.PIDList);
+                        await this.ApplyChangesAsync(newPIDs);
+                    }
+
+                    if (!activePIDs.Any() &&
+                        currentPIDs.Any() &&
+                        this.Config.AutoQuit)
+                    {
+                        Application.Current.Shutdown(0);
                     }
                 }
                 catch (ThreadAbortException)
@@ -318,7 +325,7 @@ namespace FFXIVZoomHack.WPF
         public event PropertyChangedEventHandler PropertyChanged;
 
         public void RaisePropertyChanged(
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(
                 this,
@@ -328,7 +335,7 @@ namespace FFXIVZoomHack.WPF
         protected virtual bool SetProperty<T>(
             ref T field,
             T value,
-            [CallerMemberName]string propertyName = null)
+            [CallerMemberName] string propertyName = null)
         {
             if (Equals(field, value))
             {
