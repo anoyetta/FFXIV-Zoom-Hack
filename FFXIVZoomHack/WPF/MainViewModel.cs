@@ -114,12 +114,8 @@ namespace FFXIVZoomHack.WPF
             {
                 await this.ApplyChangesAsync();
 
-                MessageBox.Show(
-                    Application.Current.MainWindow,
-                    "Completed.",
-                    "Apply Settings",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                this.MainView.ShowMessage(
+                    "The settings have been applied.");
             }));
 
         private DelegateCommand showCommand;
@@ -202,15 +198,14 @@ namespace FFXIVZoomHack.WPF
                     await this.ApplyChangesAsync();
                 }
 
-                MessageBox.Show(
-                    Application.Current.MainWindow,
-                    "Updated: " + this.Config.LastUpdate,
-                    "Update Offset",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                this.MainView.ShowMessage(
+                    $"Offset has been updated. Updated: {this.Config.LastUpdate}");
             }
             catch (Exception ex)
             {
+                this.MainView.ShowMessage(
+                    $"An error occurred while updating the offset.");
+
                 MessageBox.Show(
                     Application.Current.MainWindow,
                     "Error: " + ex,

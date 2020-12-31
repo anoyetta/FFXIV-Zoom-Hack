@@ -1,5 +1,7 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Nancy.Hosting.Self;
 
 namespace FFXIVZoomHack.WPF
@@ -52,6 +54,20 @@ namespace FFXIVZoomHack.WPF
                     new Uri(Properties.Settings.Default.RESTApiUri));
                 this.nancy.Start();
             };
+        }
+
+        public void ShowMessage(
+            string message)
+        {
+            this.MessageLabel.Content = message;
+
+            Dispatcher.BeginInvoke((Action)(async () =>
+            {
+                var durations = 100 * message.Length;
+
+                await Task.Delay(TimeSpan.FromMilliseconds(durations));
+                this.MessageLabel.Content = string.Empty;
+            }));
         }
 
         public MainViewModel ViewModel => this.DataContext as MainViewModel;

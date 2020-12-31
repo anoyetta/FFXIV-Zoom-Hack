@@ -8,7 +8,7 @@
   xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
   xmlns:tb="http://www.hardcodet.net/taskbar"
   mc:Ignorable="d"
-  Title="FFXIVZoomHack" Height="330" Width="800"
+  Title="FFXIVZoomHack" Height="350" Width="800"
   FontSize="18"
   RenderOptions.BitmapScalingMode="HighQuality"
   RenderOptions.ClearTypeHint="Enabled"
@@ -62,6 +62,7 @@
       <Grid.RowDefinitions>
         <RowDefinition />
         <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
       <StackPanel Grid.Row="0">
@@ -96,7 +97,9 @@
         </StackPanel>
       </StackPanel>
 
-      <DockPanel Grid.Row="1">
+      <Label Grid.Row="1" Margin="0 5 0 0" Name="MessageLabel" Padding="0" Foreground="Gray" FontSize="13" FontStyle="Italic" HorizontalContentAlignment="Right" />
+
+      <DockPanel Grid.Row="2" Margin="0 5 0 0">
         <CheckBox Content="Auto Quit" IsChecked="{Binding Config.AutoQuit, Mode=TwoWay}" />
 
         <TextBlock Margin="10 0 0 0" DockPanel.Dock="Right" HorizontalAlignment="Right">
