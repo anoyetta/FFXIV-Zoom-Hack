@@ -1,4 +1,6 @@
+using System;
 using System.Windows;
+using Nancy.Hosting.Self;
 
 namespace FFXIVZoomHack.WPF
 {
@@ -7,12 +9,20 @@ namespace FFXIVZoomHack.WPF
     /// </summary>
     public partial class MainView : Window
     {
+        private NancyHost nancy;
+
         public MainView()
         {
             this.InitializeComponent();
 
             this.Closing += (_, __) =>
             {
+                if (this.nancy != null)
+                {
+                    this.nancy.Stop();
+                    this.nancy.Dispose();
+                }
+
                 this.ViewModel?.Dispose();
             };
 
@@ -37,6 +47,10 @@ namespace FFXIVZoomHack.WPF
             {
                 this.ShowInTaskbar = true;
                 this.ViewModel.HideCommand.Execute();
+
+                this.nancy = new NancyHost(
+                    new Uri(Properties.Settings.Default.RESTApiUri));
+                this.nancy.Start();
             };
         }
 

@@ -18,8 +18,12 @@ namespace FFXIVZoomHack.WPF
         INotifyPropertyChanged,
         IDisposable
     {
+        public static MainViewModel Current;
+
         public MainViewModel()
         {
+            Current = this;
+
             this.Config.PropertyChanged += async (_, e) =>
             {
                 switch (e.PropertyName)
@@ -148,7 +152,7 @@ namespace FFXIVZoomHack.WPF
         public DelegateCommand ExitCommand =>
             this.exitCommand ?? (this.exitCommand = new DelegateCommand(() => this.MainView?.Close()));
 
-        private async Task ApplyChangesAsync(IEnumerable<int> pids = null) => await Task.Run(() =>
+        public async Task ApplyChangesAsync(IEnumerable<int> pids = null) => await Task.Run(() =>
         {
             const bool isOnlyMax = true;
 

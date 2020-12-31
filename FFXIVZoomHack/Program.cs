@@ -12,6 +12,8 @@ namespace FFXIVZoomHack
         [STAThread]
         private static void Main()
         {
+            CosturaUtility.Initialize();
+
             // enabled TLS1.2
             ServicePointManager.SecurityProtocol |=
                 SecurityProtocolType.Tls12;
@@ -24,7 +26,7 @@ namespace FFXIVZoomHack
             app.DispatcherUnhandledException += (_, e) =>
             {
                 MessageBox.Show(
-                    "—\Šú‚µ‚È‚¢—áŠO‚ª”­¶‚µ‚Ü‚µ‚½B\n" + e.Exception.ToString());
+                    "äºˆæœŸã—ãªã„ä¾‹å¤–ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‚\n" + e.Exception.ToString());
 
                 app.Shutdown();
             };
